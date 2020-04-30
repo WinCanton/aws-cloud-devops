@@ -91,4 +91,28 @@ Outputs:
     Description: A reference to the created VPC
     Value: !Ref VPC
     Export:
-      Name: !Sub 
+      Name: !Sub ${ProjectName}-VPCID
+
+  PublicSubnets:
+    Description: A list of the public subnets
+    Value: !Join [",", [ !Ref PublicSubnet1, !Ref PublicSubnet2]]
+    Export:
+      Name: !Sub ${ProjectName}-PUB-NETS
+
+  PublicSubnet1:
+    Description: A refrence to the public subnet in the 1st Availability Zone
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub {ProjectName}-PUB1-SN
+
+  PublicSubnet2:
+    Description: A refrence to the public subnet in the 2nd Availability Zone
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub {ProjectName}-PUB2-SN
+
+  PrivateSubnet1:
+    Description: A refrence to the public subnet in the 1st Availability Zone
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: !Sub {ProjectName}-PRI1-SN  
