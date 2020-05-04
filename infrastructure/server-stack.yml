@@ -121,4 +121,4 @@ Resources:
       UnhealthyThresholdCount: 5
       VpcId: 
         Fn::ImportValue:
-          Fn::Sub: "${ProjectName}-VPCID"
+          !Sub "${ProjectName}-VPCID"
