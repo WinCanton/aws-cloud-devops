@@ -15,7 +15,7 @@ Resources:
       GroupDescription: Allow http to our load balancer
       VpcId:
         Fn::ImportValue:
-          !Sub "${ProjecttName}-VPCID"
+          !Sub "${ProjectName}-VPCID"
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 80
@@ -58,7 +58,7 @@ Resources:
           systemctl start apache2.service
           cd /var/www/html
           echo "Udacity Demo Web Server Up and Running!" > index.html
-      ImageId: ami-0178a0e8ec79f987e
+      ImageId: ami-14fb1073
       SecurityGroups:
       - Ref: AppServerSecGroup
       InstanceType: t3.medium
@@ -74,8 +74,8 @@ Resources:
           !Sub "${ProjectName}-PUB-NETS"
       LaunchConfigurationName:
         Ref: WebAppLaunchConfig
-      MinSize: '2'
-      MaxSize: '4'
+      MinSize: '1'
+      MaxSize: '2'
       TargetGroupARNs:
       - Ref: WebAppTargetGroup
   WebAppLB:
