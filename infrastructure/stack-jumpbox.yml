@@ -1,0 +1,56 @@
+Description: >
+    Martin Simanjuntak
+    Udacity 2020
+
+Parameters:
+
+  ProjectName:
+    Description: The name of the Project
+    Type: String
+
+  ImageAmi:
+    Description: The AMI Image ID to use by the Instance
+    Type: String
+    Default: ami-14fb1073
+
+  ServerInstance:
+    Description: The server instance type to use for the jumpbox
+    Type: String
+    Default: t2.micro
+
+  KeyPair:
+    Description: The key-pair access to use for ssh
+    Type: String
+    Default: jumpbox
+
+Resources:
+
+  JumpboxSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows secure-shell connection via port 22
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${ProjectName}-VPCID"
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+
+  JumpboxInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref ImageAmi
+      InstanceType: !Ref ServerInstance
+      KeyName: !Ref KeyPair
+      SecurityGroupIds:
+        - !Ref JumpboxSecurityGroup
+      SubnetId: 
+        Fn::ImportValue:
+           !Sub ${ProjectName}-PUB1-SN
