@@ -4,9 +4,9 @@ Description: >
 
 Parameters:
 
-    ProjectName:
-        Description: The name of the project that will be prefixed to resource names
-        Type: String
+  ProjectName:
+      Description: The name of the project that will be prefixed to resource names
+      Type: String
 
   ImageAmi:
     Description: The AMI Image ID to use by the Instance
@@ -62,11 +62,27 @@ Resources:
         FromPort: 0
         ToPort: 65535
         CidrIp: 0.0.0.0/0
+  UdacityS3ReadOnlyEC2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+      Path: "/"
   ProfileWithRolesForOurApp:
     Type: AWS::IAM::InstanceProfile
     Properties: 
       Roles:
-        - UdacityS3ReadOnlyEC2        
+        - !Ref UdacityS3ReadOnlyEC2        
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
