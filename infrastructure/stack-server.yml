@@ -18,11 +18,6 @@ Parameters:
     Type: String
     Default: t2.medium
 
-  KeyPair:
-    Description: The key-pair for ssh trouble-shooting access
-    Type: String
-    Default: udacity-web-app
-
 Resources:
 
   UdacityS3ReadOnlyEC2:
