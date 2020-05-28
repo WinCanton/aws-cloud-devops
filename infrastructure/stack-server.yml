@@ -142,7 +142,6 @@ Resources:
     Properties:
       ImageId: !Ref ImageAmi
       InstanceType: !Ref ServerInstance      
-      KeyName: !Ref KeyPair
       IamInstanceProfile: !Ref ProfileWithRolesForOurApp      
       UserData:
         Fn::Base64: !Sub |
@@ -169,8 +168,8 @@ Resources:
           !Sub "${ProjectName}-PRIV-NETS"
       LaunchConfigurationName:
         Ref: WebAppLaunchConfig
-      MinSize: '2'
-      MaxSize: '4'
+      MinSize: '1'
+      MaxSize: '2'
       TargetGroupARNs:
       - Ref: WebAppTargetGroup
 
@@ -178,3 +177,5 @@ Outputs:
   LBDnsName:
     Description: A reference to the DNS name for the LoadBalancer
     Value: !Join ["", ["http://", !GetAtt [WebAppLB, DNSName]]]
+    Export:
+      Name: !Sub ${ProjectName}-HTTP-LINK
