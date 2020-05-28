@@ -1,0 +1,100 @@
+Description: >
+    Martin Simanjuntak 
+    Udacity 2020.
+
+Parameters:
+
+  ProjectName:
+    Description: The name of the project that will be prefixed to resource names
+    Type: String
+
+Resources:
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${ProjectName}-VPCID"
+      Tags:
+          - Key: Name 
+            Value: !Sub ${ProjectName} Public Routes
+
+  DefaultPublicRoute: 
+    Type: AWS::EC2::Route
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-IG
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-PUB1-SN
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-PUB2-SN
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${ProjectName}-VPCID"        
+      Tags: 
+        - Key: Name
+          Value: !Sub ${ProjectName} Private Routes (AZ1)
+
+  DefaultPrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-NAT1
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-PRI1-SN
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${ProjectName}-VPCID"                
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${ProjectName} Private Routes (AZ2)
+
+  DefaultPrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-NAT2
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${ProjectName}-PRI2-SN

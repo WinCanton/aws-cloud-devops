@@ -1,0 +1,80 @@
+Description: >
+    Martin Simanjuntak 
+    Udacity 2020.
+
+Parameters:
+
+  ProjectName:
+    Description: The name of the project that will be prefixed to resource names
+    Type: String
+
+Resources:
+
+  EmsInternetGateway:
+      Type: AWS::EC2::InternetGateway
+      Properties:
+          Tags:
+              - Key: name
+                Value: !Ref ProjectName
+
+  EmsIGAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+          InternetGatewayId: !Ref EmsInternetGateway
+          VpcId:
+            Fn::ImportValue:
+              !Sub "${ProjectName}-VPCID"
+
+  NatGateway1EIP:
+      Type: AWS::EC2::EIP
+      DependsOn: EmsIGAttachment
+      Properties: 
+          Domain: vpc
+
+  NatGateway2EIP:
+      Type: AWS::EC2::EIP
+      DependsOn: EmsIGAttachment
+      Properties:
+          Domain: vpc
+
+  NatGateway1:
+      Type: AWS::EC2::NatGateway
+      Properties: 
+          AllocationId: !GetAtt NatGateway1EIP.AllocationId
+          SubnetId:
+            Fn::ImportValue:
+              !Sub ${ProjectName}-PUB1-SN
+
+  NatGateway2: 
+      Type: AWS::EC2::NatGateway
+      Properties:
+          AllocationId: !GetAtt NatGateway2EIP.AllocationId
+          SubnetId:
+            Fn::ImportValue:
+              !Sub ${ProjectName}-PUB2-SN
+
+Outputs:
+
+  EmsIGAttachment:
+    Description: VPC Gateway Attachment
+    Value: !Ref EmsIGAttachment
+    Export:
+      Name: !Sub ${ProjectName}-IG-Attachment
+
+  EmsInternetGateway:
+    Description: Internet Gateway
+    Value: !Ref EmsInternetGateway
+    Export:
+      Name: !Sub ${ProjectName}-IG
+
+  NatGateway1:
+    Description: NAT Gateway-AZ1
+    Value: !Ref NatGateway1
+    Export:
+      Name: !Sub ${ProjectName}-NAT1
+
+  NatGateway2:
+    Description: NAT Gateway-AZ2
+    Value: !Ref NatGateway2
+    Export:
+      Name: !Sub ${ProjectName}-NAT2
